@@ -1,0 +1,19 @@
+{
+    "name": "asif/syncmig",
+    "description": "auto table structure migration generator",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "asifzcpe",
+            "email": "rahmanasif05004@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Asif\\SyncMig\\":"src"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
