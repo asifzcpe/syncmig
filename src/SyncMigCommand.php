@@ -18,6 +18,7 @@ class SyncMigCommand extends Command
     private $commandsArray=[];
     private $qualifiedNameSpace='\\Asif\\SyncMig\\Factories\\Types\\';
     private $className=null;
+    private $commands=null;
 
     public function handle()
     {
@@ -55,8 +56,10 @@ class SyncMigCommand extends Command
        {
             $this->className=$this->qualifiedNameSpace.ucfirst($c['fieldType']).'Type';
 
-            $this->info(SyncMigFactory::generate(new $this->className(),$c['fieldName'],true,'change'));
+            $this->commands.=SyncMigFactory::generate(new $this->className(),$c['fieldName'],true,'change')."\n";
        }
+
+       $this->info($this->commands);
     }
 
     private function getStub($stubName)
