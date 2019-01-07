@@ -4,10 +4,8 @@ use Asif\SyncMig\Factories;
 class SyncMigFactory
 {
 
-    public static function generate($columnType)
+    public static function generate(SyncMigInterface $columnType,string $columnName,bool $isNullable=false, string $modificationType='new')
     {
-         $sysMig=  new StringType;
-//         dd($sysMig);
-         return $sysMig->makeCommand();
+         return $columnType->makeCommand($columnName,$isNullable,$modificationType);
     }
 }
