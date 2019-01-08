@@ -3,6 +3,7 @@
 namespace Asif\SyncMig;
 use Illuminate\Console\Command;
 use Asif\SyncMig\Factories\SyncMigFactory;
+use Illuminate\Support\Str;
 
 class SyncMigCommand extends Command
 {
@@ -19,6 +20,21 @@ class SyncMigCommand extends Command
     private $qualifiedNameSpace='\\Asif\\SyncMig\\Factories\\Types\\';
     private $className=null;
     private $commands=null;
+    private $columnTypes=[
+    	'increments',
+    	'bigIncrements',
+    	'integer',
+    	'bigInteger',
+    	'boolean',
+    	'char',
+    	'date',
+    	'dateTime',
+    	'decimal',
+    	'float',
+    	'tinyInteger',
+    	'timestamps',
+    	'string'
+    ];
 
     public function handle()
     {
@@ -31,7 +47,7 @@ class SyncMigCommand extends Command
        while($this->circulate)
        {
            $this->fieldName=$this->ask('Enter Field Name');
-           $this->fieldType=$this->ask('Field Type','string');
+           $this->fieldType=$this->anticipate('Field Type',$this->columnTypes);
            $this->fieldComment=$this->ask('Comment','This column is added on '.date('d-m-Y'));
            $this->nullable=$this->ask('Is Nullable ? ','Yes');
            $this->proceed=$this->choice('Do you want to add more?',['No','Yes']);
@@ -56,10 +72,10 @@ class SyncMigCommand extends Command
        {
             $this->className=$this->qualifiedNameSpace.ucfirst($c['fieldType']).'Type';
 
-            $this->commands.=SyncMigFactory::generate(new $this->className(),$c['fieldName'],true,'change')."\n";
+            $this->commands.=SyncMigFactory::generate(new $this->className(),$c['fieldName'],true,'new')."\n\t";
        }
 
-       $this->info($this->commands);
+       $this->generateMigrationFiles($this->tableName,$this->commands);
     }
 
     private function getStub($stubName)
@@ -76,4 +92,22 @@ class SyncMigCommand extends Command
     {
         return $this->getStub('AsciiCharacter');
     }
+
+    public function generateMigrationFiles($dummyTable,$dummyCodes)
+	{
+		$dummyClass=Str::studly('CreateTable'.Str::plural(($dummyTable)));
+		$tableName=strtolower($dummyTable);
+		$migrationFileName=date('Y_m_d_His').'_create_table_'.$tableName;
+		$migrationTemplate=str_replace([
+			'DummyClass',
+			'DummyTable',
+			'DummyCodes'
+		],
+		[
+			$dummyClass,
+			$dummyTable,
+			$dummyCodes
+		],$this->getStub('NewMigration'));
+		file_put_contents(database_path('/migrations/'.$migrationFileName.'.php'),$migrationTemplate);
+	}
 }

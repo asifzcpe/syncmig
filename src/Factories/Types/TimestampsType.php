@@ -1,11 +1,11 @@
 <?php
 namespace Asif\SyncMig\Factories\Types;
 use  Asif\SyncMig\Factories\SyncMigInterface;
-class BigintegerType implements SyncMigInterface
+class TimestampsType implements SyncMigInterface
 {
    public function makeCommand(string $columnName,bool $isNullable=false, string $modificationType='new')
    {
-       $generatedCommand= '$table->bigInteger("'.$columnName.'")';
+       $generatedCommand= '$table->timestamps("'.$columnName.'")';
        ($isNullable)?$generatedCommand.="->nullable()":'';
        ($modificationType=='change')?$generatedCommand.="->change()":'';
        
