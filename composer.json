@@ -17,7 +17,7 @@
     "extra":{
         "laravel":{
             "providers":[
-                "Asif\\LaravelModuler\\Providers\\LaravelModulerServiceProvider"
+                "Asif\\SyncMig\\SyncMigServiceProvider"
             ]
         }
     },
